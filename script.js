@@ -1,10 +1,6 @@
 //notes:
 //Build player array then convert to string at each step to check for a winner
 
-
-// const player1 = "000000000";
-// const player2 = "100100100";
-
 function player(name, isAi, score, scoreArray, token, turn){
     let player = Object.create(playerTurn);
     name,
@@ -53,6 +49,7 @@ player1.name = "p1";
 player1.token = "X";
 player1.scoreArray = [1,0,0,1,0,0,1,0,0];
 player1.isAi = false;
+player1.turn = true;
 player1.checkForWin();
 
 const player2 = player();
@@ -60,4 +57,18 @@ player2.name = "p2";
 player2.token = "O";
 player2.scoreArray = [1,1,1,1,1,1,1,1,1];
 player2.isAi = true;
-player2.checkForWin();
+player2.turn = false;
+const win = player2.checkForWin();
+
+const button = document.querySelector('.btnSubmit');
+
+button.addEventListener(e => {
+    e.preventDefault();
+
+    const exportDiv = document.createElement('div');
+    const resultsDiv = document.querySelector('.resultsDiv');
+    exportDiv.textContent = win;
+
+    resultsDiv.appendChild(exportDiv);
+
+});
