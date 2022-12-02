@@ -14,3 +14,12 @@ body {
     max-height: 50px;
     max-width: 50px;
 }
+
+.player-token {
+    background-color: red;
+    pointer-events: none;
+}
+
+.player-token.clicked {
+    
+}

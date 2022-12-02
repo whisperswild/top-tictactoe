@@ -1,20 +1,32 @@
 const gameSquares = [];
+const playerObj = [];
 const gameSize = 9; //The total number of squares in the grid. 9 for normal tic-tac-toe
 const numPlayers = 2;
+let turnNum = 0;
 
 function addPlayers(numPlayers){
     for (let i = 0; i < numPlayers; i++){
 
-        const player = [];
-        player[i] = new Player();
-        player[i].name = `Player-${i}`;
-        player[i].token = "X"; //this could be a random letter of the alphabet or other token
-        player[i].scoreArray = [0,0,0,0,0,0,0,0,0]; //Need to increase the size of this array based on game size.
+
+        playerObj[i] = new Player();
+        playerObj[i].name = `Player-${i}`;
+
+        playerObj[i].scoreArray = [0,0,0,0,0,0,0,0,0]; //Need to increase the size of this array based on game size.
                                                     //This would also affect the win patterns
-        player[i].isAi = false;
-        player[i].turn = false;
+        playerObj[i].isAi = false;
+        playerObj[i].turn = false;
+        
+        //This needs to be modified for more than 2 players
+        if (i === 0){
+            playerObj[i].token = "X";
+            playerObj[i].turn = true;
+        }else{
+            playerObj[i].token = "O"; 
+        }
+        
     }
 }
+
 function buildBoard(totalSquares){
 
     //since we're dynamically creating the grid, the style needs
@@ -22,21 +34,46 @@ function buildBoard(totalSquares){
 
     for (let i = 0; i < totalSquares; i++){
         gameSquares[i] = document.getElementById(`square-${i}`);
-        gameSquares[i].addEventListener('click', e =>{
-            gameTriggers(e.target.id);
+        gameSquares[i].addEventListener('click', e => {
+            gameTriggers(e.target);
         })
     }
 }
+
 buildBoard(gameSize);
 addPlayers(numPlayers);
 
 function gameTriggers(clickedSquare){
-            //the gamesquare event listener. Add an X or O here if clicked. 
-            //if the div already has an X or O, do nothing. Check against textcontent
-            //Set this up so the click triggers a function then do the work in the function
 
-            //check whose turn it is, add that player's token then set their turn to false and the next player's turn to true
+    if(clickedSquare.classList.contains("clicked")){
+        return;
+    }
 
+    //hard coded to 2 players...move to its own function and allow more players
+    let player = [];
+    if(playerObj[0].turn){
+        player = playerObj[0];
+        playerObj[0].turn = false;
+        playerObj[1].turn = true;
+    }else{
+        player = playerObj[1]
+        playerObj[0].turn = true;
+        playerObj[1].turn = false;
+    }
+
+    
+    const div = document.createElement('div');
+    const squareDiv = document.getElementById(clickedSquare.id);
+    squareDiv.classList.toggle("clicked");
+
+    div.setAttribute('id', `${player.name}-${turnNum}-${clickedSquare.id}`);
+    div.classList.add('player-token');
+    div.textContent = player.token;
+    squareDiv.appendChild(div);
+
+    //Need to add to the player's score array here to mark which square they chose
+
+    turnNum += 1;
 }
 
 
@@ -84,40 +121,3 @@ function Player(name, isAi, scoreArray, score, token, turn, winner){
         }
     }
 }
-
-
-
-const player1 = new Player();
-player1.name = "p1";
-player1.token = "X";
-player1.scoreArray = [1,0,0,1,0,0,1,0,1];
-player1.isAi = false;
-player1.turn = true;
-player1.checkForWin();
-
-const player2 = new Player();
-player2.name = "p2";
-player2.token = "O";
-player2.scoreArray = [1,1,1,0,0,0,0,0,1];
-player2.isAi = true;
-player2.turn = false;
-player2.checkForWin();
-
-const button = document.querySelector('#btnSubmit');
-button.addEventListener('click', e => {
-    e.preventDefault();
-
-    const exportDiv = document.createElement('div');
-    const resultsDiv = document.querySelector('#resultsDiv');
-
-    if (player1.winner){
-        exportDiv.textContent = `Player 1 winner? ${player1.turn}`;
-    }else if (player2.winner){
-        exportDiv.textContent = `Player 2 winner? ${player2.winner}`;
-    }else{
-        exportDiv.textContent = `No winner yet...`;
-    }
-
-    resultsDiv.appendChild(exportDiv);
-
-});
