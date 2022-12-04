@@ -6,7 +6,15 @@
 body {
 
 }
+.game-container {
+    padding: 0;
+    margin: 0;
+    max-width: 200px;
 
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
 .gamesquare {
     border: 1px solid blue;
     min-height: 50px;
@@ -16,10 +24,9 @@ body {
 }
 
 .player-token {
-    background-color: red;
     pointer-events: none;
 }
 
 .player-token.clicked {
-    
+
 }
