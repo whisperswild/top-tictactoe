@@ -19,7 +19,7 @@ function addPlayers(numPlayers){
         playerObj[i] = new Player();
         playerObj[i].name = `Player-${i}`;
 
-        playerObj[i].scoreArray = [0,0,0,0,0,0,0,0,0]; //Need to increase the size of this array based on game size.
+        playerObj[i].scoreArray = []; //Need to increase the size of this array based on game size.
                                                        //This would also affect the win patterns
         playerObj[i].isAi = false;
         playerObj[i].turn = false;
@@ -40,7 +40,7 @@ function buildBoard(totalSquares){
     //since we're dynamically creating the grid, the style needs
     //to reflect that the grid can be different sizes
     const gameSquares = [];
-    for (let i = 0; i < totalSquares; i++){
+    for (let i = 1; i <= totalSquares; i++){
         gameSquares[i] = document.getElementById(`square-${i}`);
         gameSquares[i].addEventListener('click', e => {
             gameTriggers(e.target);
@@ -69,20 +69,7 @@ function gameTriggers(clickedSquare){
 
     //need to get which square was clicked...id="square-#"
     let clickedSquareNum = clickedSquare.id.split("-");
-    player.scoreArray[clickedSquareNum[1]] = 1;
-    
-    const footer = document.getElementById('footer');
-    const winnerDiv = document.createElement('div');
-
-    if (player.checkForWin()){
-        // player.getWinner();
-
-        winnerDiv.textContent = `AND THE WINNER IS: ${player.getWinner()}!`;
-        footer.appendChild(winnerDiv);
-    }else if (player.checkForWin()){ 
-        winnerDiv.textContent = `TIE GAME, SORRY!`;
-        footer.appendChild(winnerDiv);
-    }
+    player.scoreArray[clickedSquareNum[1]] = Number(clickedSquareNum[1]);
     
     const div = document.createElement('div');
     const squareDiv = document.getElementById(clickedSquare.id);
@@ -92,6 +79,21 @@ function gameTriggers(clickedSquare){
     div.classList.add('player-token');
     div.textContent = player.token;
     squareDiv.appendChild(div);
+
+
+    const footer = document.getElementById('footer');
+    const winnerDiv = document.createElement('div');
+
+    player.checkForWin();
+    if (player.winner){
+        winnerDiv.textContent = `AND THE WINNER IS: ${player.getWinner()}!`;
+        footer.appendChild(winnerDiv);
+    }else if (player.winner == null){ 
+        winnerDiv.textContent = `TIE GAME, SORRY!`;
+        footer.appendChild(winnerDiv);
+    }
+    
+
 
     turnNum += 1;
 }
@@ -105,54 +107,46 @@ function Player(name, isAi, scoreArray, score, token, turn, getWinner){
     this.token = token;
     this.turn = turn; //bool
     this.winner = false;
+    this.tokenCounter = 0;
 
     this.playerScore = () => {return console.log(this.score)};
     this.playerName = () => {return console.log(this.name)};
-    this.convertScore = () => {
-       return this.score = this.scoreArray.join("");
-    },
+
     this.checkForWin = () => {
-        this.convertScore();
         const WIN_ARRAY = [
+            //Each one will add up to 15
             // Rows
-            [0, 1, 2], //111000000 [0][1][2]
-            [3, 4, 5], //000111000 [3][4][5]
-            [6, 7, 8], //000000111 [6][7][8]
+            [4, 9, 2],
+            [3, 5, 7], 
+            [8, 1, 6], 
 
             // Cols:
-            [0, 3, 6], //100100100 [0][3][6]
-            [1, 4, 7], //010010010 [1][4][7]
-            [2, 5, 8], //001001001 [2][5][8]
+            [4, 3, 8],
+            [9, 5, 1], 
+            [2, 7, 6], 
 
             // Diag:
-            [0, 4, 8], //100010001 [0][4][8]
-            [2, 4, 6]  //001010100 [2][4][6]
+            [4, 5, 6], 
+            [2, 5, 8]  
 
         ]
-    
-        //winner: return this.winner = true;
-        //tie: return this.winner = null;
-        //no winner: this.winner = false;
 
-        for (let i of WIN_ARRAY){
-            for (let j of i){
-                if (this.scoreArray[j] === 1){
+        //Loop through the player's array and check if it matches all values in any one of the WIN_ARRAY elements:
+        //[[0, 1, 2],[3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+
+        WIN_ARRAY.forEach(grid => {
+                let sum = 0;
+                grid.forEach(square =>{
+                    sum += this.scoreArray[square]
+                });
+                if (sum === 15){
                     this.winner = true;
-                }else{
-                    this.winner = false;
                 }
-            }
-        }
+        });
 
-        if (this.winner == true){
-            console.log("WIN");
-            return this.winner
-        } else {
-            if (turn == 8){
-                console.log("TIE");
-                return this.winner = null;
-            }
-        }
+        if (turn == 8){
+            this.winner = null;
+        }     
     }
     this.getWinner = () => {
         return this.token;

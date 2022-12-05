@@ -21,6 +21,10 @@ body {
     min-width: 50px;
     max-height: 50px;
     max-width: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .player-token {
