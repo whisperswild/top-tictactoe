@@ -1,7 +1,3 @@
-//Next step, build a "game complete" function to clear the board off
-// Diagonals don't always win?
-
-
 const gameSize = 9; //The total number of squares in the grid. 9 for normal tic-tac-toe
 const numPlayers = 2;
 let turnNum = 0;
@@ -48,6 +44,14 @@ function buildBoard(totalSquares){
     }
 }
 
+function gameOver(totalSquares){
+    const gameSquares = []
+    for (let i = 1; i<= totalSquares; i++){
+        gameSquares[i] = document.getElementById(`square-${i}`);
+        gameSquares[i].classList.add("clicked");
+    }
+
+}
 
 function gameTriggers(clickedSquare){
 
@@ -88,13 +92,12 @@ function gameTriggers(clickedSquare){
     if (player.winner){
         winnerDiv.textContent = `AND THE WINNER IS: ${player.getWinner()}!`;
         footer.appendChild(winnerDiv);
+
+        gameOver(gameSize);
     }else if (player.winner == null){ 
         winnerDiv.textContent = `TIE GAME, SORRY!`;
         footer.appendChild(winnerDiv);
     }
-    
-
-
     turnNum += 1;
 }
 
@@ -151,4 +154,5 @@ function Player(name, isAi, scoreArray, score, token, turn, getWinner){
     this.getWinner = () => {
         return this.token;
     }
+
 }
