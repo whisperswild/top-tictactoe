@@ -4,7 +4,14 @@
 }
 
 body {
-
+    margin: 0;
+    padding: 0;
+    width: 95vw;
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .game-container {
     padding: 0;

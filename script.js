@@ -2,6 +2,8 @@ const gameSize = 9; //The total number of squares in the grid. 9 for normal tic-
 const numPlayers = 2;
 let turnNum = 0;
 
+//Next step...add some AI
+
 
 const playerObj = [];
 
